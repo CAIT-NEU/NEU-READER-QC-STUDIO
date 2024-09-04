@@ -1,41 +1,47 @@
-/*!
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Routes, Route, BrowserRouter } from 'react-router-dom';
 
-=========================================================
-* Argon Dashboard Chakra - v1.0.0
-=========================================================
+import AuthLayout from 'layouts/Auth.js';
+import AdminLayout from 'layouts/AdminLayout';
+import { ChakraProvider } from '@chakra-ui/react';
 
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-chakra
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-chakra/blob/master/LICENSE.md)
+import theme from 'theme/theme.js';
+import TestCase from 'views/TestCase/TestCase';
+import TestCaseDetail from 'views/TestCase/TestCaseDetail';
+import TestRun from 'views/TestRun/TestRun';
+import TestRunDetail from 'views/TestRun/TestRunDetail';
 
-* Design and Coded by Simmmple & Creative Tim
+import { createClient } from '@supabase/supabase-js';
+import { getUserById } from 'data/data_source/user_data_source';
+import {
+  CURRENT_USER,
+  setCurrentUser,
+} from 'data/data_source/user_data_source';
 
-=========================================================
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
+const supabaseKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+export const supabase = createClient(supabaseUrl, supabaseKey);
 
-*/
-import React from "react";
-import ReactDOM from "react-dom";
-import { HashRouter, Route, Switch, Redirect } from "react-router-dom";
+const root = ReactDOM.createRoot(document.getElementById('root'));
 
-import AuthLayout from "layouts/Auth.js";
-import AdminLayout from "layouts/Admin.js";
-import RTLLayout from "layouts/RTL.js"; // Chakra imports
-import { ChakraProvider } from "@chakra-ui/react";
-// Custom Chakra theme
-import theme from "theme/theme.js";
-
-ReactDOM.render(
+root.render(
   <ChakraProvider theme={theme} resetCss={false} position="relative">
-    <HashRouter>
-      <Switch>
-        <Route path={`/auth`} component={AuthLayout} />
-        <Route path={`/admin`} component={AdminLayout} />
-        <Route path={`/rtl`} component={RTLLayout} />
-        <Redirect from={`/`} to="/admin/dashboard" />
-      </Switch>
-    </HashRouter>
-  </ChakraProvider>,
-  document.getElementById("root")
+    <BrowserRouter>
+      <Routes>
+        <Route path={`/auth`} element={<AuthLayout />} />
+        <Route path="/admin" Component={AdminLayout}>
+          <Route path="testcase" Component={TestCase} />
+          <Route path="case/:id" Component={TestCaseDetail} />
+          <Route path="testrun" Component={TestRun} />
+          <Route path="run/:id" Component={TestRunDetail} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  </ChakraProvider>
 );
+
+getUserById('24ea1faa-0b69-40f7-9a6e-49e62cb0ee33').then((data) => {
+  setCurrentUser(data);
+});
