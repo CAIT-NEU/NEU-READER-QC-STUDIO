@@ -35,20 +35,25 @@ import { createTestCase } from 'data/data_source/test_case_data_source';
 import { v4 as uuid } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { CURRENT_USER } from 'data/data_source/user_data_source';
+import { getAllUsers } from 'data/data_source/user_data_source';
 
 function TestCase() {
   const [loading, setLoading] = useState(true);
   const [cases, setCases] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [allUsers, setAllUsers] = useState([]);
 
   const navigate = useNavigate();
   const toast = useToast();
 
   useEffect(() => {
     if (loading == true) {
-      getAllTestCases().then((cases) => {
-        setCases(cases);
-        setLoading(false);
+      getAllUsers().then((users) => {
+        setAllUsers(users);
+        getAllTestCases().then((cases) => {
+          setCases(cases);
+          setLoading(false);
+        });
       });
     }
   });
@@ -68,6 +73,8 @@ function TestCase() {
         </CardBody>
       </Card>
     );
+
+  console.log(allUsers);
 
   return (
     <>
@@ -132,7 +139,9 @@ function TestCase() {
                       es={row.es}
                       severity={row.severity}
                       layer={row.layer}
-                      creator={row.creator}
+                      creator={
+                        allUsers.filter((u) => u.id == row.createdBy)[0].name
+                      }
                       isLast={index == testCasesMockData.length - 1}
                     />
                   );

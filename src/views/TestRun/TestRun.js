@@ -32,6 +32,8 @@ import { getTestCaseRunResults } from 'data/data_source/test_run_data_source';
 import { createTestRun } from 'data/data_source/test_run_data_source';
 import { v4 as uuid } from 'uuid';
 import { useNavigate } from 'react-router-dom';
+import { getAllUsers } from 'data/data_source/user_data_source';
+import { CURRENT_USER } from 'data/data_source/user_data_source';
 
 function TestRun() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -40,32 +42,36 @@ function TestRun() {
   const [runResults, setRunResults] = useState([]);
   const toast = useToast();
   const navigate = useNavigate();
+  const [allUsers, setAllUsers] = useState([]);
 
   useEffect(() => {
     if (loading) {
-      getAllTestRuns().then(async (runs) => {
-        setRuns(runs);
+      getAllUsers().then((users) => {
+        setAllUsers(users);
+        getAllTestRuns().then(async (runs) => {
+          setRuns(runs);
 
-        var rrs = [];
-        for (var i = 0; i < runs.length; i++) {
-          await getTestCaseRunResults(runs[i].id).then((rr) => {
-            var state = 'PASSED';
-            var done = false;
-            Object.values(rr).forEach((value) => {
-              if (done) return;
-              if (value.includes('FAILED')) {
-                state = 'FAILED';
-                done = true;
-              } else if (value.includes('PENDING')) {
-                state = 'PENDING';
-              }
+          var rrs = [];
+          for (var i = 0; i < runs.length; i++) {
+            await getTestCaseRunResults(runs[i].id).then((rr) => {
+              var state = 'PASSED';
+              var done = false;
+              Object.values(rr).forEach((value) => {
+                if (done) return;
+                if (value.includes('FAILED')) {
+                  state = 'FAILED';
+                  done = true;
+                } else if (value.includes('PENDING')) {
+                  state = 'PENDING';
+                }
+              });
+              rrs.push(state);
             });
-            rrs.push(state);
-          });
-        }
+          }
 
-        setRunResults(rrs);
-        setLoading(false);
+          setRunResults(rrs);
+          setLoading(false);
+        });
       });
     }
   }, []);
@@ -130,7 +136,9 @@ function TestRun() {
                       environment={row.environment}
                       es={row.es}
                       status={runResults[index]}
-                      creator={row.creator}
+                      creator={
+                        allUsers.filter((u) => u.id == row.createdBy)[0].name
+                      }
                       isLast={index == runs.length - 1}
                     />
                   );
@@ -151,7 +159,7 @@ function TestRun() {
 export default TestRun;
 
 function createTestRunPopup(toast, navigate, isOpen, onClose) {
-  var formStore = { id: uuid() };
+  var formStore = { id: uuid(), createdBy: CURRENT_USER.id };
   return (
     <Modal size={'4xl'} width={'1000px'} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />

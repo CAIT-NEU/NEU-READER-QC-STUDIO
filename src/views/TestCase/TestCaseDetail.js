@@ -292,7 +292,7 @@ function getGeneralInfo(data) {
             <Flex alignItems={'center'}>
               <Text fontWeight={'bold'}>ES: </Text>
               <Box width={'8px'} />
-              {buildESTag(data.platform)}
+              {buildESTag(data.es)}
             </Flex>
           </Td>
         </Tr>
