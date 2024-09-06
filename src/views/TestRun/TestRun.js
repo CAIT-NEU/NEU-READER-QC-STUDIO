@@ -33,7 +33,7 @@ import { createTestRun } from 'data/data_source/test_run_data_source';
 import { v4 as uuid } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { getAllUsers } from 'data/data_source/user_data_source';
-import { CURRENT_USER } from 'data/data_source/user_data_source';
+import { getCurrentUser } from 'data/data_source/user_data_source';
 
 function TestRun() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -159,7 +159,7 @@ function TestRun() {
 export default TestRun;
 
 function createTestRunPopup(toast, navigate, isOpen, onClose) {
-  var formStore = { id: uuid(), createdBy: CURRENT_USER.id };
+  var formStore = { id: uuid(), createdBy: getCurrentUser().id };
   return (
     <Modal size={'4xl'} width={'1000px'} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />

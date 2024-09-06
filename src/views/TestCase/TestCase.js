@@ -34,8 +34,8 @@ import { getAllTestCases } from 'data/data_source/test_case_data_source';
 import { createTestCase } from 'data/data_source/test_case_data_source';
 import { v4 as uuid } from 'uuid';
 import { useNavigate } from 'react-router-dom';
-import { CURRENT_USER } from 'data/data_source/user_data_source';
 import { getAllUsers } from 'data/data_source/user_data_source';
+import { getCurrentUser } from 'data/data_source/user_data_source';
 
 function TestCase() {
   const [loading, setLoading] = useState(true);
@@ -162,7 +162,7 @@ function TestCase() {
 export default TestCase;
 
 function createTestCasePopup(toast, navigate, isOpen, onClose) {
-  var formStore = { id: uuid(), data: null, createdBy: CURRENT_USER.id };
+  var formStore = { id: uuid(), data: null, createdBy: getCurrentUser().id };
   return (
     <Modal size={'4xl'} width={'1000px'} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />

@@ -1,10 +1,25 @@
 import { UserEntity } from 'data/entity/user_entity';
 import { supabase } from '../../index';
 
-export var CURRENT_USER;
+export function getCurrentUser() {
+  return JSON.parse(sessionStorage.getItem("currentUser"));
+};
 
 export function setCurrentUser(user) {
-  CURRENT_USER = user;
+  if(user == null  || user == undefined) {
+    sessionStorage.removeItem('currentUser');
+    return;
+  }
+  sessionStorage.setItem("currentUser",  JSON.stringify({
+    id: user.id,
+    name: user.name,
+    role: user.role,
+    es: user.es,
+    username: user.username,
+    password: user.password,
+    lastLogin: user.lastLogin,
+    isAdmin: user.isAdmin,
+  }));
 }
 
 export async function getAllUsers() {

@@ -17,10 +17,12 @@ import { useState } from 'react';
 import { DrawIoEmbed } from 'react-drawio';
 import { IoPencil } from 'react-icons/io5';
 
-export default function TestCaseHighLevel() {
+export default function TestCaseHighLevel(props) {
+  const { formStore, data } = props;
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
-  const [imgData, setImgData] = useState(null);
+  const [imgData, setImgData] = useState(JSON.parse(data)[0]);
 
   return (
     <>
@@ -37,12 +39,12 @@ export default function TestCaseHighLevel() {
         <Box h={'20px'} />
         <Box w={'100%'}>{imgData && <img src={imgData} />}</Box>
       </Flex>
-      {buildDrawIO(toast, imgData, setImgData, isOpen, onClose)}
+      {buildDrawIO(formStore, toast, imgData, setImgData, isOpen, onClose)}
     </>
   );
 }
 
-function buildDrawIO(toast, imgData, setImgData, isOpen, onClose) {
+function buildDrawIO(formStore, toast, imgData, setImgData, isOpen, onClose) {
   return (
     <Modal size={'full'} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -63,6 +65,7 @@ function buildDrawIO(toast, imgData, setImgData, isOpen, onClose) {
                   isClosable: true,
                 });
                 setImgData(data.xml);
+                formStore.push(data.xml);
               }}
             />
           </Box>

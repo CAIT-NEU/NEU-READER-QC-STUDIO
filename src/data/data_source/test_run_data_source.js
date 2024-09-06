@@ -2,7 +2,7 @@ import { TestRunEntity } from 'data/entity/test_run_entity';
 import { supabase } from '../../index';
 import { getAllTestCases } from './test_case_data_source';
 import { now } from 'moment';
-import { CURRENT_USER } from './user_data_source';
+import { getCurrentUser } from './user_data_source';
 
 export async function createTestRun(data) {
   await supabase.from('testrun').insert(data);
@@ -86,6 +86,7 @@ export async function getTestCaseRunResults(runUUID) {
 
 export async function updateTestRunResult(runID, result) {
   var testRun = await getTestRunByID(runID);
+  var CURRENT_USER = getCurrentUser();
 
   for (var i = 0; i < testRun.cases.length; i++) {
     var testCase = testRun.cases[i];

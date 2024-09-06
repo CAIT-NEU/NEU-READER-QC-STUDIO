@@ -25,8 +25,8 @@ import bgAdmin from 'assets/img/admin-background.png';
 import TestCase from 'views/TestCase/TestCase.js';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { AtlassianLogo } from 'components/Icons/Icons';
-import { CURRENT_USER } from 'data/data_source/user_data_source';
 import { setCurrentUser } from 'data/data_source/user_data_source';
+import { getCurrentUser } from 'data/data_source/user_data_source';
 
 export default function AdminLayout(props) {
   const { ...rest } = props;
@@ -35,12 +35,10 @@ export default function AdminLayout(props) {
   let navigate = useNavigate();
 
   useEffect(() => {
-    console.log('CURRENT_USER_CHANGED');
-    console.log(CURRENT_USER);
-    if (CURRENT_USER == null) {
+    if (getCurrentUser() == null) {
       return navigate('/auth');
     }
-  }, [CURRENT_USER]);
+  }, [getCurrentUser()]);
 
   document.documentElement.dir = 'ltr';
   return (
@@ -86,9 +84,9 @@ export default function AdminLayout(props) {
                       alignItems={'start'}
                     >
                       <Text fontSize={'xl'} fontWeight={'bold'} color={'white'}>
-                        {CURRENT_USER.name}
+                        {getCurrentUser().name}
                       </Text>
-                      <Text color={'white'}>{CURRENT_USER.role}</Text>
+                      <Text color={'white'}>{getCurrentUser().role}</Text>
                     </Flex>
                   </MenuButton>
                   <MenuList>
@@ -110,13 +108,4 @@ export default function AdminLayout(props) {
       </MainPanel>
     </Box>
   );
-}
-
-function parseView() {
-  let path = window.location.pathname;
-
-  console.log('path: ' + path);
-
-  if (path == '/admin/dashboard') return <TestCase />;
-  if (path == '/admin/testcase') return <TestCase />;
 }

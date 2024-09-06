@@ -155,7 +155,7 @@ function TestCaseDetail() {
               />
             ) : (
               <Box w={'100%'} h={'500px'} mt={'20px'}>
-                <TestCaseHighLevel />
+                <TestCaseHighLevel formStore={formStore} data={data.data}/>
               </Box>
             )}
           </CardBody>
