@@ -20,7 +20,6 @@ export default function TestCaseLowLevel(props) {
 
   const [noStep, setNoStep] = useState(stepData.length);
   const [steps, setSteps] = useState([]);
-  console.log(noStep);
   if (noStep > stepData.length) {
     formStore.push({});
     steps.push(createEmptyRow(formStore, noStep));
@@ -32,7 +31,7 @@ export default function TestCaseLowLevel(props) {
         data: testStep.data,
         expect: testStep.expect,
       });
-      steps.push(createFilledRow(formStore, i + 1, testStep));
+      steps.push(createFilledRow(formStore, i + 1));
     }
   }
 
@@ -115,7 +114,7 @@ function createFilledRow(formStore, noStep, data) {
           onChange={(e) => {
             formStore[noStep - 1].action = e.target.value;
           }}
-          value={data.action}
+          defaultValue={formStore[noStep - 1].action}
         />
       </Td>
       <Td>
@@ -125,7 +124,7 @@ function createFilledRow(formStore, noStep, data) {
           onChange={(e) => {
             formStore[noStep - 1].data = e.target.value;
           }}
-          value={data.data}
+          defaultValue={formStore[noStep - 1].data}
         />
       </Td>
       <Td>
@@ -135,7 +134,7 @@ function createFilledRow(formStore, noStep, data) {
           onChange={(e) => {
             formStore[noStep - 1].expect = e.target.value;
           }}
-          value={data.expect}
+          defaultValue={formStore[noStep - 1].expect}
         />
       </Td>
     </Tr>

@@ -6,6 +6,10 @@ export async function createTestCase(data) {
   return true;
 }
 
+export async function deleteTestCase(uuid) {
+  await supabase.from('testcase').delete().eq('id', uuid);
+}
+
 export async function getTestCaseByID(uuid) {
   var data = await supabase.from('testcase').select('*').eq('id', uuid);
   data = data.data[0];

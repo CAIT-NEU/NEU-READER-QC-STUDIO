@@ -39,6 +39,7 @@ import { getAllTestCases } from 'data/data_source/test_case_data_source';
 import TestCaseLowLevel from './TestCaseLowLevel';
 import { updateTestCase } from 'data/data_source/test_case_data_source';
 import { getTestCaseByID } from 'data/data_source/test_case_data_source';
+import { deleteTestCase } from 'data/data_source/test_case_data_source';
 
 function TestCaseDetail() {
   const cancelRef = useRef();
@@ -57,7 +58,6 @@ function TestCaseDetail() {
       getTestCaseByID(id).then((c) => {
         setData(c);
         setLoading(false);
-        console.log(c);
       });
     }
   }, []);
@@ -162,7 +162,7 @@ function TestCaseDetail() {
         </Card>
       </Flex>
 
-      {requestDelete(cancelRef, isOpen, onClose)}
+      {requestDelete(id, navigate, cancelRef, isOpen, onClose)}
     </>
   );
 }
@@ -180,7 +180,7 @@ function requestSave(toast) {
   });
 }
 
-function requestDelete(cancelRef, isOpen, onClose) {
+function requestDelete(uuid, navigate, cancelRef, isOpen, onClose) {
   return (
     <AlertDialog
       isOpen={isOpen}
@@ -201,7 +201,12 @@ function requestDelete(cancelRef, isOpen, onClose) {
             <Button ref={cancelRef} onClick={onClose}>
               Huỷ
             </Button>
-            <Button colorScheme="red" onClick={onClose} ml={3}>
+            <Button colorScheme="red" onClick={() => {
+              deleteTestCase(uuid).then((_) => {
+                onClose();
+                navigate('/admin/testcase');
+              })
+            }} ml={3}>
               Xác nhận
             </Button>
           </AlertDialogFooter>
